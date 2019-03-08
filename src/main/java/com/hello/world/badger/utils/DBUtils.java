@@ -4,46 +4,65 @@ import com.hello.world.badger.common.DBConnection;
 import com.hello.world.badger.common.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
 public class DBUtils {
     private static DBConnection dbConnection = DBConnection.getInstance();
 
-    public static Map<String, Object> select(String sql) {
-        Preconditions.checkArgument(sql != null, "sql is null");
-        Preconditions.checkArgument(sql != null, "sql is null");
+    public static List<Map<String, Object>> select(String sql) {
+        Preconditions.checkNotNull(sql, "sql is null");
         Connection connection = null;
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
             connection = dbConnection.getConnection();
             if (connection != null) {
                 throw new RuntimeException("dbConnection is null");
             }
-            statement = connection.createStatement();
-            boolean succ = statement.execute(sql);
-            if (succ) {
-                ResultSet resultSet = statement.getResultSet();
-                
-                while (resultSet.next()) {
-                    resultSet.
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+
+            resultSet = preparedStatement.getResultSet();
+            String[] cols = extractColumLabels(resultSet);
+            List<Map<String, Object>> rows = new ArrayList<>();
+            while (resultSet.next()) {
+                Map<String, Object> row = new HashMap<>();
+                for (int i=0; i<cols.length; i++) {
+                    row.put(cols[i], resultSet.getObject(cols[i]));
                 }
-            } else {
-                throw new RuntimeException("exec sql:" + sql + " fail");
+                rows.add(row);
             }
+            return rows;
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            closeStatement(statement);
+            closeResultSet(resultSet);
+            closeStatement(preparedStatement);
             closeConnection(connection);
         }
     }
 
+    private static String[] extractColumLabels(ResultSet resultSet) throws Exception {
+        Preconditions.checkNotNull(resultSet, "resultSet is null");
+        int count = resultSet.getMetaData().getColumnCount();
+        String[] cols = new String[count];
+        for (int i=0; i<count; i++) {
+            cols[i] = resultSet.getMetaData().getColumnLabel(i);
+        }
+        return cols;
+    }
+
     public static boolean insert(String sql) {
-        Preconditions.checkArgument(sql != null, "sql is null");
+        return update(sql);
+    }
+
+    public static boolean update(String sql) {
+        Preconditions.checkNotNull(sql, "sql is null");
         Connection connection = null;
         Statement statement = null;
         try {
@@ -76,6 +95,16 @@ public class DBUtils {
             try {
                 statement.close();
             } catch (Throwable t) {
+            }
+        }
+    }
+
+    private static void closeResultSet(ResultSet resultSet) {
+        if (resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (Throwable t) {
+
             }
         }
     }
