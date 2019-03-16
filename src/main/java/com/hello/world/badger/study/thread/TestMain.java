@@ -17,6 +17,7 @@ public class TestMain {
 
         for (Long i=0L; i<100; i++) {
             TimeUnit.SECONDS.sleep(1);
+            System.out.println("put " + i + " in fromQueue");
             fromQueue.put(i);
         }
     }
