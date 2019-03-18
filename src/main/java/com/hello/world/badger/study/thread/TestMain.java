@@ -7,7 +7,7 @@ public class TestMain {
     public static void main(String[] args) throws Exception {
         for (Long i=0L; i<100; i++) {
             TimeUnit.SECONDS.sleep(1);
-            System.out.print("compute value: " + i + ", ");
+            System.out.print("compute value: " + i + " => ");
             Badger.compute(i);
         }
     }
