@@ -12,7 +12,7 @@ public class SquareRunner extends IRunner {
     private LinkedBlockingQueue<Long> fromQueue;
     private LinkedBlockingQueue<Long> toQueue;
 
-    public SquareRunner(LinkedBlockingQueue<Long> fromQueue,
+    private SquareRunner(LinkedBlockingQueue<Long> fromQueue,
                         LinkedBlockingQueue<Long> toQueue) {
         super();
         this.fromQueue = fromQueue;

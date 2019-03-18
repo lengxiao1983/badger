@@ -11,7 +11,7 @@ public class ShowRunner extends IRunner {
 
     private LinkedBlockingQueue<Long> resultQueue;
 
-    public ShowRunner(LinkedBlockingQueue<Long> resultQueue) {
+    private ShowRunner(LinkedBlockingQueue<Long> resultQueue) {
         super();
         this.resultQueue = resultQueue;
     }

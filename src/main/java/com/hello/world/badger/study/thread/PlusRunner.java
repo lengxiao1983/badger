@@ -10,8 +10,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class PlusRunner extends IRunner {
     private LinkedBlockingQueue<Long> toQueue;
     private LinkedBlockingQueue<Long> resultQueue;
+    private Long sum = 0L;
 
-    public PlusRunner(LinkedBlockingQueue<Long> toQueue,
+    private PlusRunner(LinkedBlockingQueue<Long> toQueue,
                       LinkedBlockingQueue<Long> resultQueue) {
         super();
         this.toQueue = toQueue;
@@ -25,7 +26,6 @@ public class PlusRunner extends IRunner {
 
     @Override
     public void process() throws Exception {
-        Long sum = 0L;
         while (true) {
             Long val = toQueue.take();
             if (val != null) {

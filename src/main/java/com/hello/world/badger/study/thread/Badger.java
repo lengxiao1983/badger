@@ -6,9 +6,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Data
 public class Badger {
-    private LinkedBlockingQueue<Long> fromQueue = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<Long> toQueue = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<Long> resultQueue = new LinkedBlockingQueue<>();
+    private static final LinkedBlockingQueue<Long> fromQueue = new LinkedBlockingQueue<>();
+    private static final LinkedBlockingQueue<Long> toQueue = new LinkedBlockingQueue<>();
+    private static final LinkedBlockingQueue<Long> resultQueue = new LinkedBlockingQueue<>();
 
     private static final Badger instance = new Badger();
 
@@ -20,6 +20,6 @@ public class Badger {
     }
 
     public static void compute(Long val) throws Exception {
-        instance.getFromQueue().put(val);
+        fromQueue.put(val);
     }
 }
